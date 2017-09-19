@@ -153,7 +153,8 @@
       id="ajax"
       handle-as="json"
       content-type="application/json"
-      method="POST">
+      method="POST"
+      on-response="hresponse">
     </iron-ajax>
   </template>
 
@@ -184,11 +185,14 @@
       }
 
       submitForm(event) {
-        console.log("I only appear one time!!!!");
         this.$['my-form'].submit();
         this.$.ajax.body = form_Data;
         this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/cuatro";
         this.$.ajax.generateRequest(); 
+      }
+
+      hresponse() {
+        alert("Form Submitted!");
       }
     }
     window.customElements.define(Purchase4Page.is, Purchase4Page);

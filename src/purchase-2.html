@@ -200,24 +200,22 @@
       form.addEventListener('iron-form-presubmit', function (event) {
         event.preventDefault();
         FormData = form.serializeForm()
-        console.log("fomdata is 00000000000", FormData)
       });
     }
+
+    hresponse() {
+        alert("Form Submitted!");
+      }
      
     submitForm(event) {
-      console.log("I only appear one time, cenas()");
+     
       this.$['my-form'].submit();
       this.$.ajax.body = FormData;
       this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/segundo";
       this.$.ajax.generateRequest(); 
     }
 
-    hresponse(request) {
-        console.log(request.detail.response);
-        console.log(this.$.ajax.lastResponse);
-        console.log(this.$.ajax.params);
-      }
-    }     
+  }     
 
   window.customElements.define(Purchase2Page.is, Purchase2Page);
   </script>

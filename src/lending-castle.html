@@ -8,18 +8,12 @@
 <link rel="import" href="../shared-styles/shared-styles.html">
 <dom-module id="lending-castle">
 <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
- <!-- <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
- <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-  <!-- Defines the element's style and local DOM -->
   <template>
   <style>
   @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
   </style>
     <style include="bootstrap-styles shared-styles shop-button">
     </style>
-    <!-- <img id="app-logo" src="images/apple.png" width="50px"/>
-    <h1><u>Lending Castle</u></h1> -->
-    
        <header class="masthead">
         <div class="header-content">
             <div class="header-content-inner">
@@ -34,9 +28,6 @@
     <shop-button  responsive>
       <button class="btn btn-primary btn-xl" on-click="getData" aria-label="Get Posts">Get posts from API</button>
     </shop-button>
-    
-    <p>Check Response data in Console after hitting Get Posts button</p>
-    <p>Your typed requestUrl: {{requestUrl}}</p>
     <iron-request id="xhr"></iron-request> 
   </template>
   <script>
@@ -78,7 +69,6 @@
               self.set('xhrUrl', self.$.xhr.url);
               self.set('input', data.title);
               self.set('data', response)
-              console.log('response=====', response);
             });
           //let resolveUrl = url + nr;
           let resolveUrl = url;

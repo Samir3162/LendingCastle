@@ -183,26 +183,26 @@
             <shop-button responsive>
               <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
             </shop-button>
+          
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" on-click="" aria-label="Go Back" href="/">Go Back</a>
+            </shop-button>
+            
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-2">Next</a>
+            </shop-button>
+            
+            <shop-button responsive>
+            </shop-button>
           </div>
         </form>
       </iron-form>
-      
-      <shop-button responsive>
-        <a class="btn btn-primary btn-lg" on-click="" aria-label="Go Back" href="/">Go Back</a>
-      </shop-button>
-      
-      <shop-button responsive>
-        <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-2">Next</a>
-      </shop-button>
-      
-      <shop-button responsive>
-      </shop-button>
-      
       <iron-ajax
         id="ajax"
         handle-as="json"
         content-type="application/json"
-        method="POST">
+        method="POST"
+        on-response="hresponse">
       </iron-ajax>
 </template>
 
@@ -223,9 +223,12 @@
           FormData = form.serializeForm()
         });
       }
+
+      hresponse() {
+        alert("Form Submitted!");
+      }
        
       submitForm(event) {
-        console.log("I only appear one time, cenas()");
         this.$['my-form'].submit();
         this.$.ajax.body = FormData;
         this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/primero";

@@ -146,7 +146,7 @@
             <shop-button responsive>
               <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
             </shop-button>
-          </div>  
+            
         </form>
       </iron-form>
       <shop-button responsive>
@@ -154,7 +154,8 @@
       </shop-button>
       <shop-button responsive>
         <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-4">Next</a>
-      </shop-button>          
+      </shop-button>   
+      </div>       
     </section>
     <iron-ajax
       id="ajax"
@@ -180,7 +181,7 @@
       }
        
       submitForm(event) {
-        console.log("I only appear one time, cenas()");
+        // console.log("I only appear one time, cenas()");
         this.$['my-form'].submit();
         this.$.ajax.body = FormData;
         this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/tercero";
@@ -188,11 +189,10 @@
       }
 
       hresponse(request) {
-          console.log(request.detail.response);
-          console.log(this.$.ajax.lastResponse);
-          console.log(this.$.ajax.params);
-        }
-      }     
+        alert("Form Submitted!");
+      }
+        
+    }     
 
     window.customElements.define(Purchase3Page.is, Purchase3Page);
   </script>

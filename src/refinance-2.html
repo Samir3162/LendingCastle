@@ -169,7 +169,8 @@
         id="ajax"
         handle-as="json"
         content-type="application/json"
-        method="POST">
+        method="POST"
+        on-response="hresponse">
     </iron-ajax>
   </template>
 
@@ -190,9 +191,12 @@
           FormData = form.serializeForm()
         });
       }
+
+      hresponse() {
+        alert("Form Submitted!");
+      }
        
       submitForm(event) {
-        console.log("I only appear one time, cenas()");
         this.$['my-form'].submit();
         this.$.ajax.body = FormData;
         this.$.ajax.url="http://api.lendingcastle.com/api/lc/refi/segundo";
