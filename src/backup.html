@@ -1,0 +1,230 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+
+
+
+<dom-module id="purchase-1-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-button shop-input">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input {
+        font-size: 16px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+
+   <!--  <header class="masthead">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">Purchase</h1>
+            </div>
+        </div>
+    </header> -->
+    <section id="services">
+      <div class="container">
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="firstNameLabel">First Name:</label>
+              <input type="text" id="firstName" name="firstName"
+                   autofocus required
+                  aria-labelledby="firstNameLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="lastNameLabel">Last Name:</label>
+              <input type="text" value="" id="lastName" name="lastName"
+                  required
+                  aria-labelledby="lastNameLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="zipLabel">Zip:</label>
+              <input type="number" id="zip" name="zip"
+                  required
+                  aria-labelledby="zipLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="emailLabel">Email:</label>
+              <input type="email" id="email" name="email"
+                  required
+                  aria-labelledby="emailLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="phoneLabel">Phone:</label>
+              <input type="number" id="phone" name="phone"
+                  required
+                  aria-labelledby="phoneLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-select>
+            <select id="rateCredit" name="rateCredit" required
+                aria-labelledby="rateCreditLabel">
+              <template is="dom-repeat" items="{{languages}}">
+                  <option value="{{item.code}}">{{item.name}} ({{item.nativeName}})</option>
+              </template>
+            </select>
+            <shop-md-decorator aria-hidden="true">
+              <shop-underline></shop-underline>
+            </shop-md-decorator>
+            </shop-select>
+          </div>
+        </div>
+        <shop-button responsive>
+          <a class="btn btn-primary btn-lg" aria-label="Go Back" href="/">Go Back</a>
+        </shop-button>
+        <shop-button responsive>
+          <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-2">Next</a>
+        </shop-button>
+      </div>
+      </section>
+  </template>
+
+  <script>
+    class Purchase1Page extends Polymer.Element {
+      static get is() { return 'purchase-1-page'; }
+      static get properties() { return {
+        firstName: {
+          type: String,
+          notify: true,
+        },
+        lastName: {
+          type: String,
+          notify: true,
+        },
+        zip: {
+          type: Number,
+          notify: true,
+        },
+        email: {
+          type: String,
+          notify: true,
+        },
+        phone: {
+          type: Number,
+          notify: true,
+        },
+        
+      ready(){
+        super.ready();
+        this.languages = LANGUAGES;
+      }
+    }
+    window.customElements.define(Purchase1Page.is, Purchase1Page);
+  </script>
+</dom-module>

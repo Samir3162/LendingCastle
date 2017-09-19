@@ -1,0 +1,224 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-select.html">
+<link rel="import" href="shop-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="purchase-2-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-select shop-button shop-input">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input, shop-select {
+        font-size: 16px;
+      }
+
+      shop-select {
+        margin-bottom: 20px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .shop-select-label {
+        line-height: 20px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+   
+    <section id="services">
+      <iron-form id="my-form">
+        <form  content-type="application/json">
+          <div class="container">
+            <div class="row input-row">
+              <div class="column">
+                <label id="mortgageGoalLabel" class="shop-select-label">Mortgage Goal</label>
+                <shop-select>
+                  <select on-select="selectMortgage" id="mortgageGoal" name="mortgageGoal" required
+                      aria-labelledby="mortgageGoalLabel">
+                    <option value="Offer Pending" selected>Offer Pending / Found a House</option>
+                    <option value="buying">Buying in 2-4 months</option>
+                    <option value="exploring">Exploring options</option>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+            <div class="row input-row">
+              <div class="column">
+                <label id="purchasingHomeLabel" class="shop-select-label">Why are you purchasing a new home?</label>
+                <shop-select>
+                  <select id="purchasingHome" name="purchasingHome" required
+                      aria-labelledby="purchasingHomeLabel">
+                    <option value="Selling Home" selected>Selling my home and buying</option>
+                    <option value="Buying Second Home">Buying a second home</option>
+                    <option value="Investment">Buying an investment property</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+            <div class="row input-row">
+              <div class="column">
+                <label id="statePropertyLabel" class="shop-select-label">What state are you buying your property?</label>
+                <shop-select>
+                  <select id="stateProperty" name="stateProperty" required$="[[hasBillingAddress]]"
+                      aria-labelledby="statePropertyLabel">
+                    <template is="dom-repeat" items="{{states}}">
+                        <option value="{{item.abbreviation}}">{{item.name}}</option>
+                    </template>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
+            </shop-button>
+
+        </form>
+      </iron-form>
+
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Go Back" href="/purchase-1">Go Back</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-3">Next</a>
+            </shop-button>
+            
+          </div>
+    </section>
+     <iron-ajax
+        auto
+        id="ajax"
+        handle-as="json"
+        content-type="application/json"
+        method="POST"
+        on-response="hresponse">
+      </iron-ajax>
+  </template>
+
+  <script>
+  var FormData = ''
+  class Purchase2Page extends Polymer.Element {
+    static get is() { return 'purchase-2-page'; }
+
+    ready(){
+      super.ready();
+      this.states = STATES_LIST;
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      const form = this.$['my-form'];
+      form.addEventListener('iron-form-presubmit', function (event) {
+        event.preventDefault();
+        FormData = form.serializeForm()
+        console.log("fomdata is 00000000000", FormData)
+      });
+    }
+     
+    submitForm(event) {
+      console.log("I only appear one time, cenas()");
+      this.$['my-form'].submit();
+      this.$.ajax.body = FormData;
+      this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/segundo";
+      this.$.ajax.generateRequest(); 
+    }
+
+    hresponse(request) {
+        console.log(request.detail.response);
+        console.log(this.$.ajax.lastResponse);
+        console.log(this.$.ajax.params);
+      }
+    }     
+
+  window.customElements.define(Purchase2Page.is, Purchase2Page);
+  </script>
+</dom-module>

@@ -1,0 +1,54 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<dom-module id="ajax-element">
+
+  <template>
+    <p>Your typed requestUrl: {{requestUrl}}</p>
+    <p>The called xhr Url: {{xhrUrl}}</p>
+    <paper-input id="ticket" label="Ticket" on-blur="onBlur" value="{{input}}">
+    </paper-input>
+    <iron-request id="xhr"></iron-request>
+  </template>
+
+  <script>
+    let url = "https://jsonplaceholder.typicode.com/posts/";
+    Polymer({
+      is: "ajax-element",
+      properties: {
+        input: {
+          type: String
+        },
+        requestUrl: {
+          type: String
+        },
+        xhrUrl: {
+          type:String
+        }
+      },
+      onBlur: function(event) {
+          this.set('requestUrl', "");
+          this.set("xhrUrl", "");
+          const self = this;
+          //let nr = parseInt(event.target.value, 10);
+          // get correct entry via XHR
+          this.$.xhr.completes.then(function(request) {
+              return request.response;
+            })
+            .then(function(response) {
+              let data = JSON.parse(response);
+              // update entry
+              self.set('xhrUrl', self.$.xhr.url);
+              self.set('input', data.title);
+            });
+          //let resolveUrl = url + nr;
+          let resolveUrl = url;
+          this.set('requestUrl', resolveUrl);
+          this.$.xhr.send({
+            url: resolveUrl
+          });
+      },
+    });
+  </script>
+
+</dom-module>

@@ -1,0 +1,95 @@
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../bower_components/granite-bootstrap/granite-bootstrap.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<dom-module id="lending-castle">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+ <!-- <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+  <!-- Defines the element's style and local DOM -->
+  <template>
+  <style>
+  @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
+  </style>
+    <style include="bootstrap-styles shared-styles shop-button">
+    </style>
+    <!-- <img id="app-logo" src="images/apple.png" width="50px"/>
+    <h1><u>Lending Castle</u></h1> -->
+    
+       <header class="masthead">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">Low rate, instant rate lock, fast service</h1>
+                <p>I'm interested in:</p>
+                <a class="btn btn-primary btn-xl" href="/refinance-1">Refinance</a>
+                <a class="btn btn-primary btn-xl" href="/purchase-1">Purchase</a>
+            </div>
+        </div>
+    </header>
+    
+    <shop-button  responsive>
+      <button class="btn btn-primary btn-xl" on-click="getData" aria-label="Get Posts">Get posts from API</button>
+    </shop-button>
+    
+    <p>Check Response data in Console after hitting Get Posts button</p>
+    <p>Your typed requestUrl: {{requestUrl}}</p>
+    <iron-request id="xhr"></iron-request> 
+  </template>
+  <script>
+  let url = "https://jsonplaceholder.typicode.com/posts/";
+    // Your new element extends the Polymer.Element base class
+    class MyNewView extends Polymer.Element {
+      static get is() { return 'lending-castle'; }
+
+      static get properties() { return {
+
+        input: {
+          type: String
+        },
+        requestUrl: {
+          type: String
+        },
+        xhrUrl: {
+          type:String
+        },
+        data: {
+          type: Object
+        }
+
+      }}
+
+      getData(event) {
+          this.set('requestUrl', "");
+          this.set("xhrUrl", "");
+          this.set("response", "");
+          const self = this;
+          //let nr = parseInt(event.target.value, 10);
+          // get correct entry via XHR
+          this.$.xhr.completes.then(function(request) {
+              return request.response;
+            })
+            .then(function(response) {
+              let data = JSON.parse(response);
+              // update entry
+              self.set('xhrUrl', self.$.xhr.url);
+              self.set('input', data.title);
+              self.set('data', response)
+              console.log('response=====', response);
+            });
+          //let resolveUrl = url + nr;
+          let resolveUrl = url;
+          this.set('requestUrl', resolveUrl);
+          this.$.xhr.send({
+            url: resolveUrl
+          });
+      }
+    }
+    //Now, register your new custom element so the browser can use it
+    customElements.define(MyNewView.is, MyNewView);
+  </script>
+
+</dom-module>

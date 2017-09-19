@@ -1,0 +1,205 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-select.html">
+<link rel="import" href="shop-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="refinance-2-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-select shop-button shop-input">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input, shop-select {
+        font-size: 16px;
+      }
+
+      shop-select {
+        margin-bottom: 20px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .shop-select-label {
+        line-height: 20px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+    <section id="services">
+    <iron-form id="my-form">
+        <form  content-type="application/json">
+          <div class="container">
+           <div class="row input-row">
+              <div class="column">
+                <label id="mortgageGoalLabel" class="shop-select-label">Mortgage Goal</label>
+                <shop-select>
+                  <select on-select="selectMortgage" id="mortgageGoal" name="mortgageGoal" required
+                      aria-labelledby="mortgageGoalLabel">
+                    <option value="Offer Pending" selected>Offer Pending / Found a House</option>
+                    <option value="buying">Buying in 2-4 months</option>
+                    <option value="exploring">Exploring options</option>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+            <div class="row input-row">
+              <div class="column">
+                <shop-input>
+                <label id="borrowAmountLabel">How much do you want to borrow?</label>
+                  <input value={{borrow_amount}} type="text" id="borrow_amount" name="borrow_amount"
+                       autofocus required
+                      aria-labelledby="borrowAmountLabel">
+                  <shop-md-decorator error-message="Required" aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-input>
+              </div>
+            </div>
+
+            <div class="row input-row">
+              <div class="column">
+                <shop-input>
+                  <label id="propertyWorthLabel">How much is your home worth? </label>
+                  <input value={{property_worth}} type="text" id="property_worth" name="property_worth"
+                     autofocus required
+                    aria-labelledby="propertyWorthLabel">
+                  <shop-md-decorator error-message="Required" aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-input>
+              </div>
+            </div>
+            
+            <br>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Go Back" href="/refinance-1">Go Back</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Next" href="/refinance-3">Next</a>
+            </shop-button>
+          </div>
+        </form>
+      </iron-form>
+    </section>
+    <iron-ajax
+        id="ajax"
+        handle-as="json"
+        content-type="application/json"
+        method="POST">
+    </iron-ajax>
+  </template>
+
+  <script>
+    class Refinance2Page extends Polymer.Element {
+      static get is() { return 'refinance-2-page'; }
+
+      ready(){
+        super.ready();
+        this.states = STATES_LIST;
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        const form = this.$['my-form'];
+        form.addEventListener('iron-form-presubmit', function (event) {
+          event.preventDefault();
+          FormData = form.serializeForm()
+        });
+      }
+       
+      submitForm(event) {
+        console.log("I only appear one time, cenas()");
+        this.$['my-form'].submit();
+        this.$.ajax.body = FormData;
+        this.$.ajax.url="http://api.lendingcastle.com/api/lc/refi/segundo";
+        this.$.ajax.generateRequest(); 
+      }
+    }
+
+    window.customElements.define(Refinance2Page.is, Refinance2Page);
+  </script>
+</dom-module>

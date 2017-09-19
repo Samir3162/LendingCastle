@@ -1,0 +1,40 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/my-app.html",
+  "fragments": [
+    "src/refinance-1.html",
+    "src/refinance-2.html",
+    "src/refinance-2.html",
+    "src/purchase-1.html",
+    "src/purchase-2.html",
+    "src/purchase-3.html",
+    "src/purchase-4.html",
+    "src/thankyou.html",
+    "src/view404.html",
+    "src/lending-castle.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "bower.json"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "images/**/*",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    },
+    {
+      "preset": "es6-bundled"
+    },
+    {
+      "preset": "es6-unbundled"
+    }
+  ]
+}

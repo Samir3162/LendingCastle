@@ -1,0 +1,196 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="purchase-4-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-input shop-button">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input {
+        font-size: 16px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+    <section id="services">
+    <iron-form id="my-form">
+        <form  content-type="application/json">
+          <div class="container">
+            <div class="row input-row">
+              <div class="column">
+                <label id="downPaymentLabel">Estimated Down Payment:</label>
+                <shop-input>
+                  <input type="number" id="downPayment" name="downPayment"
+                    autofocus 
+                    aria-labelledby="downPaymentLabel">
+                    <shop-md-decorator error-message="Required" aria-hidden="true">
+                      <shop-underline></shop-underline>
+                    </shop-md-decorator>
+                </shop-input>
+                <span>or</span>
+            
+                <shop-select>
+                  <select id="percentageOptions" name="percentageOptions" aria-labelledby="percentageOptionsLabel">
+                    <template is="dom-repeat" items="{{percentage}}">
+                      <option value="{{item}}">{{item}}%</option>
+                    </template>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+                <br/>
+
+                <label id="purchasePaymentLabel">Purchase Payment:</label>
+                <shop-input>
+                  <input type="number" id="purchasePayment" name="purchasePayment"
+                    autofocus 
+                    aria-labelledby="purchasePaymentLabel">
+                    <shop-md-decorator error-message="Required" aria-hidden="true">
+                      <shop-underline></shop-underline>
+                    </shop-md-decorator>
+                </shop-input>
+
+              </div>
+            </div>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Go Back" href="/purchase-3">Go Back</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Next" href="/thankyou">Next</a>
+            </shop-button>
+          </div>
+        </form>
+      </iron-form>
+    </section>
+    <iron-ajax
+      id="ajax"
+      handle-as="json"
+      content-type="application/json"
+      method="POST">
+    </iron-ajax>
+  </template>
+
+  <script>
+  var form_Data = ''
+    class Purchase4Page extends Polymer.Element {
+      static get is() { return 'purchase-4-page'; }
+
+      ready(){
+        super.ready();
+        this.percentage = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        const form = this.$['my-form'];
+        form.addEventListener('iron-form-presubmit', function (event) {
+        event.preventDefault();
+        form_Data = form.serializeForm()          
+        
+        if(form_Data.downPayment == '') {
+          delete form_Data.downPayment;          
+        }
+        else {
+          delete form_Data.percentageOptions;         
+        }        
+        });
+      }
+
+      submitForm(event) {
+        console.log("I only appear one time!!!!");
+        this.$['my-form'].submit();
+        this.$.ajax.body = form_Data;
+        this.$.ajax.url="http://api.lendingcastle.com/api/lc/purchase/cuatro";
+        this.$.ajax.generateRequest(); 
+      }
+    }
+    window.customElements.define(Purchase4Page.is, Purchase4Page);
+  </script>
+</dom-module>

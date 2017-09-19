@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+
+<dom-module id="thankyou-page">
+  <template>
+    <style include="shared-styles">
+    </style>
+
+    <header class="masthead">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <p><strong>Thank you!
+                Our home loan expert will contact you soon to go over your options and lock your rate.
+                Our process is very quick and we are excited to be a part of your refinance process.</strong></p>
+            </div>
+        </div>
+    </header>
+  </template>
+
+  <script>
+    class ThankyouPage extends Polymer.Element {
+      static get is() { return 'thankyou-page'; }
+    }
+
+    window.customElements.define(ThankyouPage.is, ThankyouPage);
+  </script>
+</dom-module>

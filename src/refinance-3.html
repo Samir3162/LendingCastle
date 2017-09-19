@@ -1,0 +1,189 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-select.html">
+<link rel="import" href="shop-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="refinance-3-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-select shop-button shop-input">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input, shop-select {
+        font-size: 16px;
+      }
+
+      shop-select {
+        margin-bottom: 20px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .shop-select-label {
+        line-height: 20px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+    <section id="services">
+    <iron-form id="my-form">
+        <form  content-type="application/json">
+          <div class="container">
+            <div class="row input-row">
+              <div class="column">
+                <label id="rateCreditLabel" class="shop-select-label">How would you rate your credit?</label>
+                <shop-select>
+                  <select id="rateCredit" name="rateCredit" required
+                      aria-labelledby="rateCreditLabel">
+                    <option value="Excellent" selected>Excellent (720 or above)</option>
+                    <option value="Good">Good (660-719)</option>
+                    <option value="Average">Average (620-659)</option>
+                    <option value="Average">Average (620-659)</option>
+                    <option value="Below Average">Below Average (570-620)</option>
+                    <option value="Poor">Poor (below 570)</option>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+            <div class="row input-row">
+              <div class="column">
+                <label id="isIntrestedVALoansLabel" class="shop-select-label">I'm eligible for and interested in VA loans</label>
+                <shop-select>
+                  <select id="isIntrestedVALoans" name="isIntrestedVALoans" required
+                      aria-labelledby="isIntrestedVALoansLabel">
+                    <option value="yes" selected>Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  <shop-md-decorator aria-hidden="true">
+                    <shop-underline></shop-underline>
+                  </shop-md-decorator>
+                </shop-select>
+              </div>
+            </div>
+            <br>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" on-click="submitForm" aria-label="Submit" >Submit</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Go Back" href="/lending-castle">Go Back</a>
+            </shop-button>
+            <shop-button responsive>
+              <a class="btn btn-primary btn-lg" aria-label="Next" href="/thankyou">Next</a>
+            </shop-button>
+          </div>
+        </form>
+      </iron-form>
+    </section>
+    <iron-ajax
+        id="ajax"
+        handle-as="json"
+        content-type="application/json"
+        method="POST">
+    </iron-ajax>
+  </template>
+
+  <script>
+    class Refinance3Page extends Polymer.Element {
+      static get is() { return 'refinance-3-page'; }
+      connectedCallback() {
+        super.connectedCallback();
+        const form = this.$['my-form'];
+        form.addEventListener('iron-form-presubmit', function (event) {
+          event.preventDefault();
+          FormData = form.serializeForm()
+        });
+      }
+       
+      submitForm(event) {
+        console.log("I only appear one time, cenas()");
+        this.$['my-form'].submit();
+        this.$.ajax.body = FormData;
+        this.$.ajax.url="http://api.lendingcastle.com/api/lc/refi/tercero";
+        this.$.ajax.generateRequest(); 
+      }
+    }
+
+    window.customElements.define(Refinance3Page.is, Refinance3Page);
+  </script>
+</dom-module>

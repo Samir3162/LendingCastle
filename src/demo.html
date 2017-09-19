@@ -1,0 +1,306 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shop-input.html">
+<!-- <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html"> -->
+<!-- <link rel="import" href="../bower_components/paper-item/paper-item.html"> -->
+<!-- <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html"> -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shop-button.html">
+<link rel="import" href="../shared-styles/bootstrap-styles.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<!-- <link rel="import" href="bower_components/promise-polyfill/promise-polyfill-lite.html">
+ -->
+
+<dom-module id="purchase-1-page">
+  <template>
+    <style include="bootstrap-styles shared-styles shop-button shop-input">
+      .main-frame {
+        transition: opacity 0.5s;
+      }
+
+      :host([waiting]) .main-frame {
+        opacity: 0.1;
+      }
+
+      shop-input {
+        font-size: 16px;
+      }
+
+      paper-spinner-lite {
+        position: fixed;
+        top: calc(50% - 14px);
+        left: calc(50% - 14px);
+      }
+
+      .billing-address-picker {
+        margin: 28px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .billing-address-picker > label {
+        margin-left: 12px;
+      }
+
+      .grid {
+        margin-top: 40px;
+        @apply --layout-horizontal;
+      }
+
+      .grid > section {
+        @apply --layout-flex;
+      }
+
+      .grid > section:not(:first-child) {
+        margin-left: 80px;
+      }
+
+      .row {
+        @apply --layout-horizontal;
+        @apply --layout-end;
+      }
+
+      .column {
+        @apply --layout-vertical;
+      }
+
+      .row > .flex,
+      .input-row > * {
+        @apply --layout-flex;
+      }
+
+      .input-row > *:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      .order-summary-row {
+        line-height: 24px;
+      }
+
+      .total-row {
+        font-weight: 500;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 767px) {
+
+        .grid {
+          display: block;
+          margin-top: 0;
+        }
+
+        .grid > section:not(:first-child) {
+          margin-left: 0;
+        }
+
+      }
+
+    </style>
+
+   <!--  <header class="masthead">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">Purchase</h1>
+            </div>
+        </div>
+    </header> -->
+
+
+
+
+
+    <section id="services">
+    
+      <form is="iron-form" method="post" content-type="application/json" action="http://lendingcastle.com/api/lc/purchase/primero">
+      <div class="container">
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="firstNameLabel">First Name:</label>
+              <paper-input value={{firstName}} type="text" id="firstName" name="firstName"
+                   autofocus required
+                  aria-labelledby="firstNameLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="lastNameLabel">Last Name:</label>
+              <paper-input value={{lastName}} type="text" value="" id="lastName" name="lastName"
+                  required
+                  aria-labelledby="lastNameLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="zipLabel">Zip:</label>
+              <paper-input value={{zip}} type="number" id="zip" name="zip"
+                  required
+                  aria-labelledby="zipLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="emailLabel">Email:</label>
+              <paper-input value={{email}} type="email" id="email" name="email"
+                  required
+                  aria-labelledby="emailLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-input>
+            <label id="phoneLabel">Phone:</label>
+              <paper-input type="number" value={{phone}} id="phone" name="phone"
+                  required
+                  aria-labelledby="phoneLabel">
+              <shop-md-decorator error-message="Required" aria-hidden="true">
+                <shop-underline></shop-underline>
+              </shop-md-decorator>
+            </shop-input>
+          </div>
+        </div>
+        <div class="row input-row">
+          <div class="column">
+            <shop-select>
+            <!-- <select on-select="selectLanguage" id="rateCredit" name="rateCredit" required
+                aria-labelledby="rateCreditLabel">
+              <template is="dom-repeat" items="{{languages}}">
+                  <option value="{{item.code}}">{{item.name}} ({{item.nativeName}})</option>
+              </template>
+            </select> -->
+            <shop-md-decorator aria-hidden="true">
+              <shop-underline></shop-underline>
+            </shop-md-decorator>
+            </shop-select>
+          </div>
+        </div>
+        </form>
+        <shop-button responsive>
+          <a class="btn btn-primary btn-lg" on-click="" aria-label="Go Back" href="/">Go Back</a>
+        </shop-button>
+        <shop-button responsive>
+          <a class="btn btn-primary btn-lg" aria-label="Next" href="/purchase-2">Next</a>
+        </shop-button>
+        <shop-button responsive>
+        </shop-button>
+        
+        
+        <iron-request id="xhr"></iron-request>
+        <iron-ajax
+          auto
+          url='url'
+          handle-as="json"
+          content-type="application/json"
+          method="POST"
+          params='{"part":"snippet", "q":"polymer"}'
+          on-response="hresponse"
+          >
+        </iron-ajax>
+
+        <a class="btn btn-primary btn-lg" aria-label="Next" on-click="postData">
+          Test
+        </a>
+        
+      
+      </section>
+  </template>
+
+  <script>
+  var url = "http://lendingcastle.com/api/lc/purchase/primero";
+    
+    class Purchase1Page extends Polymer.Element {
+      static get is() { return 'purchase-1-page'; }
+      static get properties() { return {
+        firstName: {
+          type: String,
+          notify: true,
+        },
+        lastName: {
+          type: String,
+          notify: true,
+        },
+        zip: {
+          type: Number,
+          notify: true,
+        },
+        email: {
+          type: String,
+          notify: true,
+        },
+        phone: {
+          type: Number,
+          notify: true,
+        },
+        // language: {
+        //   type: String,
+        //   notify: true,
+        // },
+        // input: {
+        //   type: String
+        // },
+        // requestUrl: {
+        //   type: String
+        // },
+        // xhrUrl: {
+        //   type:String
+        // },
+        // data: {
+        //   type: Object
+        //  }
+       }
+      }
+           
+      // ready(){
+      //   this.$.requestRepos.generateRequest();
+      //   // super.ready();
+      //   // this.languages = LANGUAGES;
+      // }
+
+      postData (event) {
+        console.log('2222222', this.firstName);
+        // this.$.ajax.url=url;
+        // this.$.ajax.generateRequest
+        // var allData = {'firstName':this.firstName, 'lastname' : this.lastname}
+        this.$.xhr.send({url: url, body: '{"part":"snippet", "q":"polymer"}'});
+        Polymer.dom(event).localTarget.parentElement.parentElement.submit();
+      }
+
+      hresponse (request) {  
+              const self = this;          
+              let data = JSON.parse(request.response);
+              // allData = {}
+              // update entry
+              self.set('firstName', data.firstName);
+              self.set('lastName', data.lastName);
+              self.set('zip', data.zip);
+              self.set('email', data.email);
+              self.set('phone', data.phone);
+              console.log('response=====', request.response);
+        }
+
+    
+}
+    window.customElements.define(Purchase1Page.is, Purchase1Page);
+  </script>
+</dom-module>
